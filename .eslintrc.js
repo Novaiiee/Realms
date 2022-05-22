@@ -18,10 +18,11 @@ module.exports = {
 		"react/function-component-definition": "off",
 		"react/jsx-props-no-spreading": "off",
 		"react/jsx-filename-extension": "off",
+		"react/button-has-type": "off",
 	},
 	settings: {
 		react: {
-			version: "latest",
+			version: "detect",
 		},
 	},
 };
