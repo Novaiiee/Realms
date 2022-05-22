@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String  @unique
+  providerAccountId String  @unique
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Post {
+  id      String @id @unique @default(cuid())
+  title   String
+  content String
+  votes   Int
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
+}
+
+model Community {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String
+  owner       Ownership @relation(fields: [ownerId], references: [id])
+  ownerId     String    @unique
+  members     User[]
+}
+
+model Ownership {
+  id          String      @id
+  user        User        @relation(fields: [userId], references: [id])
+  userId      String
+  communities Community[]
+}
+
+model User {
+  id            String      @id @default(cuid())
+  name          String?     @unique
+  email         String?     @unique
+  image         String?
+  emailVerified DateTime?
+  ownerships    Ownership[]
+  posts         Post[]
+  accounts      Account[]
+  sessions      Session[]
+  communites    Community[]
+}
+
+model VerificationToken {
+  identifier String   @unique
+  token      String   @unique
+  expires    DateTime
+}
