@@ -1,15 +1,9 @@
-import type { NextPage } from "next";
-import { signIn, useSession } from "next-auth/react";
+import Navbar from "../components/shared/Navbar";
 
-const Home: NextPage = () => {
-	const { data, status } = useSession();
-
+export default function index() {
 	return (
 		<section>
-			<button onClick={() => signIn("github")}>Login</button>
-			<h1>{status === "authenticated" && data?.user?.image}</h1>
+			<Navbar />
 		</section>
 	);
-};
-
-export default Home;
+}
