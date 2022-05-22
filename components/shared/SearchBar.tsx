@@ -1,5 +1,5 @@
 import useDebounce from "@hooks/useDebounce";
-import { Post } from "@prisma/client";
+import { Community } from "@prisma/client";
 import Link from "next/link";
 import { useState } from "react";
 import { useQuery } from "react-query";
@@ -8,12 +8,12 @@ export default function SearchBar() {
 	const [input, setInput] = useState("");
 	const query = useDebounce(input, 800);
 
-	const { data, isLoading } = useQuery<Post[]>(["auto-complete-posts", query], {
+	const { data, isLoading } = useQuery<Community[]>(["search-bar", query], {
 		queryFn: async () => {
-			const res = await fetch(`/api/posts?query=${query}`);
+			const res = await fetch(`/api/community/search?q=${query}`);
 			const json = await res.json();
 
-			return json.posts;
+			return json.data;
 		},
 		initialData: [],
 		enabled: query.length > 0,
@@ -31,9 +31,9 @@ export default function SearchBar() {
 				{isLoading && <li className="py-2">Loading</li>}
 				{!isLoading &&
 					data!.length > 0 &&
-					data!.map((post) => (
-						<li key={post.id} className="py-2">
-							<Link href={`/posts/${post.id}`}>{post.title}</Link>
+					data!.map((community) => (
+						<li key={community.id} className="py-2">
+							<Link href={`/community/${community.id}`}>{community.name}</Link>
 						</li>
 					))}
 				{!isLoading && data!.length === 0 && <li className="py-2">No Results</li>}

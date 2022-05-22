@@ -38,28 +38,24 @@ model Session {
 }
 
 model Post {
-  id      String @id @unique @default(cuid())
-  title   String
-  content String
-  votes   Int
-  user    User   @relation(fields: [userId], references: [id])
-  userId  String
+  id          String    @id @unique @default(cuid())
+  title       String
+  content     String
+  votes       Int
+  userId      String
+  communityId String
+  
+  user        User      @relation(fields: [userId], references: [id])
+  community   Community @relation(fields: [communityId], references: [id])
 }
 
 model Community {
-  id          String    @id @default(cuid())
-  name        String    @unique
+  id          String @id @default(cuid())
+  name        String @unique
   description String
-  owner       Ownership @relation(fields: [ownerId], references: [id])
-  ownerId     String    @unique
+  ownerId     String @unique
+  posts       Post[]
   members     User[]
-}
-
-model Ownership {
-  id          String      @id
-  user        User        @relation(fields: [userId], references: [id])
-  userId      String
-  communities Community[]
 }
 
 model User {
@@ -68,7 +64,6 @@ model User {
   email         String?     @unique
   image         String?
   emailVerified DateTime?
-  ownerships    Ownership[]
   posts         Post[]
   accounts      Account[]
   sessions      Session[]

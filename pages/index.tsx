@@ -1,9 +1,17 @@
+import type { NextPage } from "next";
+import Head from "next/head";
 import Navbar from "../components/shared/Navbar";
 
-export default function index() {
-	return (
-		<section>
+const index: NextPage = () => (
+	<>
+		<Head>
+			<title>Realms</title>
+		</Head>
+		<main>
 			<Navbar />
-		</section>
-	);
-}
+			<section className="container mx-auto" />
+		</main>
+	</>
+);
+
+export default index;

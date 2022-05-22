@@ -8,7 +8,7 @@ export default function Navbar() {
 	const isAuthenticated = status === "authenticated";
 
 	return (
-		<div className="navbar bg-base-100 container mx-auto py-5 shadow-sm">
+		<div className="navbar bg-base-100 container mx-auto py-5 shadow-sm px-0">
 			<div className="flex-1 navbar-start">
 				<a className="text-xl font-semibold" href="/">
 					Realms
@@ -19,7 +19,7 @@ export default function Navbar() {
 			</div>
 			<div className="navbar-end flex-1">
 				{!isAuthenticated && (
-					<button onClick={() => signIn("github")} className="btn btn-primary">
+					<button onClick={() => signIn()} className="btn btn-primary">
 						Login
 					</button>
 				)}
