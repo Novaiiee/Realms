@@ -1,11 +1,11 @@
-import { Community, PrismaClient } from "@prisma/client";
+import { PrismaClient, Realm } from "@prisma/client";
 
 declare global {
 	var prisma: PrismaClient | undefined;
 }
 
-export type CommunityWithPosts =
-	| (Community & {
+export type RealmWithPosts =
+	| (Realm & {
 			posts: PostWithUser[];
 			_count: {
 				members: number;
@@ -21,7 +21,7 @@ export type PostWithUser = {
 		name: string | null;
 	};
 	id: string;
-	community: Community;
+	realm: Realm;
 	content: string;
 	votes: number;
 	title: string;

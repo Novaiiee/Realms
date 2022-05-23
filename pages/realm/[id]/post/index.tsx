@@ -12,7 +12,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 			id: postId,
 		},
 		select: {
-			community: true,
+			realm: true,
 			content: true,
 			votes: true,
 			id: true,

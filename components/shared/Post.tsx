@@ -15,17 +15,17 @@ export default function Post({ post }: Props) {
 	const isAuthenticated = status === "authenticated";
 
 	return (
-		<Link href={`/community/${post.community.id}/post?postId=${post.id}`}>
-			<div className="grid grid-cols-12 border-1 border-gray-300 rounded-md">
-				<div className="bg-gray-300 col-span-1 flex justify-start items-center flex-col space-y-2 py-4">
-					<button>
-						<ArrowUp />
-					</button>
-					<span>{formatVotes(post.votes)}</span>
-					<button>
-						<ArrowDown />
-					</button>
-				</div>
+		<div className="grid grid-cols-12 border-1 border-gray-300 rounded-md">
+			<div className="bg-gray-300 col-span-1 flex justify-start items-center flex-col space-y-2 py-4">
+				<button>
+					<ArrowUp />
+				</button>
+				<span>{formatVotes(post.votes)}</span>
+				<button>
+					<ArrowDown />
+				</button>
+			</div>
+			<Link href={`/realm/${post.realm.id}/post?postId=${post.id}`}>
 				<div className="col-span-11 p-4">
 					<h3 className="opacity-50 mb-4">
 						Posted by{" "}
@@ -38,7 +38,7 @@ export default function Post({ post }: Props) {
 						<p>{shortenString(post.content, 300)}</p>
 					</div>
 				</div>
-			</div>
-		</Link>
+			</Link>
+		</div>
 	);
 }

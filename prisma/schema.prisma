@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
@@ -17,12 +14,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -38,18 +35,17 @@ model Session {
 }
 
 model Post {
-  id          String    @id @unique @default(cuid())
-  title       String
-  content     String
-  votes       Int
-  userId      String
-  communityId String
-  
-  user        User      @relation(fields: [userId], references: [id])
-  community   Community @relation(fields: [communityId], references: [id])
+  id      String  @id @unique @default(cuid())
+  title   String
+  content String?
+  votes   Int
+  userId  String
+  realmId String
+  realm   Realm   @relation(fields: [realmId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 }
 
-model Community {
+model Realm {
   id          String @id @default(cuid())
   name        String @unique
   description String
@@ -59,15 +55,15 @@ model Community {
 }
 
 model User {
-  id            String      @id @default(cuid())
-  name          String?     @unique
-  email         String?     @unique
+  id            String    @id @default(cuid())
+  name          String?   @unique
+  email         String?   @unique
   image         String?
   emailVerified DateTime?
-  posts         Post[]
   accounts      Account[]
+  posts         Post[]
   sessions      Session[]
-  communites    Community[]
+  realms        Realm[]
 }
 
 model VerificationToken {

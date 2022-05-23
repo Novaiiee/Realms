@@ -10,6 +10,14 @@ export default NextAuth({
 		GoogleProvider({
 			clientId: process.env.GOOGLE_CLIENT_ID ?? "",
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+			profile(profile) {
+				return {
+					id: profile.sub,
+					name: profile.name,
+					email: profile.email,
+					image: profile.picture,
+				};
+			},
 		}),
 		GithubProvider({
 			clientId: process.env.GITHUB_CLIENT_ID,
@@ -24,4 +32,11 @@ export default NextAuth({
 			},
 		}),
 	],
+	callbacks: {
+		session: async ({ session, user }) => {
+			// eslint-disable-next-line no-param-reassign
+			session.userId = user.id;
+			return Promise.resolve(session);
+		},
+	},
 });

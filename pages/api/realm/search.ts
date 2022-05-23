@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 export default async function handle(req: NextApiRequest, res: NextApiResponse): Promise<void> {
 	const query = req.query.q as string;
 
-	const communities = await prisma.community.findMany({
+	const communities = await prisma.realm.findMany({
 		where: {
 			name: {
 				search: query.replace(/[\s\n\t]/g, "_"),

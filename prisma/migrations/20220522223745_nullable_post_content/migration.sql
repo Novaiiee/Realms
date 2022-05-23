@@ -30,29 +30,22 @@ CREATE TABLE "Session" (
 CREATE TABLE "Post" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
+    "content" TEXT,
     "votes" INTEGER NOT NULL,
     "userId" TEXT NOT NULL,
+    "realmId" TEXT NOT NULL,
 
     CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Community" (
+CREATE TABLE "Realm" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "ownerId" TEXT NOT NULL,
 
-    CONSTRAINT "Community_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Ownership" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-
-    CONSTRAINT "Ownership_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Realm_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -74,16 +67,13 @@ CREATE TABLE "VerificationToken" (
 );
 
 -- CreateTable
-CREATE TABLE "_CommunityToUser" (
+CREATE TABLE "_RealmToUser" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Account_provider_key" ON "Account"("provider");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Account_providerAccountId_key" ON "Account"("providerAccountId");
+CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
@@ -92,10 +82,10 @@ CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
 CREATE UNIQUE INDEX "Post_id_key" ON "Post"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Community_name_key" ON "Community"("name");
+CREATE UNIQUE INDEX "Realm_name_key" ON "Realm"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Community_ownerId_key" ON "Community"("ownerId");
+CREATE UNIQUE INDEX "Realm_ownerId_key" ON "Realm"("ownerId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_name_key" ON "User"("name");
@@ -110,10 +100,10 @@ CREATE UNIQUE INDEX "VerificationToken_identifier_key" ON "VerificationToken"("i
 CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_CommunityToUser_AB_unique" ON "_CommunityToUser"("A", "B");
+CREATE UNIQUE INDEX "_RealmToUser_AB_unique" ON "_RealmToUser"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_CommunityToUser_B_index" ON "_CommunityToUser"("B");
+CREATE INDEX "_RealmToUser_B_index" ON "_RealmToUser"("B");
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -122,16 +112,13 @@ ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Post" ADD CONSTRAINT "Post_realmId_fkey" FOREIGN KEY ("realmId") REFERENCES "Realm"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Community" ADD CONSTRAINT "Community_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "Ownership"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "_RealmToUser" ADD CONSTRAINT "_RealmToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Realm"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Ownership" ADD CONSTRAINT "Ownership_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CommunityToUser" ADD CONSTRAINT "_CommunityToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Community"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CommunityToUser" ADD CONSTRAINT "_CommunityToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_RealmToUser" ADD CONSTRAINT "_RealmToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
