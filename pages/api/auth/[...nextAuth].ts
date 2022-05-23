@@ -16,6 +16,7 @@ export default NextAuth({
 			clientSecret: process.env.GITHUB_CLIENT_SECRET,
 		}),
 	],
+	secret: process.env.NEXT_AUTH_SECRET,
 	callbacks: {
 		session: async ({ session, user }) => {
 			// eslint-disable-next-line no-param-reassign
