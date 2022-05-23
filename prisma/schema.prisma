@@ -35,23 +35,26 @@ model Session {
 }
 
 model Post {
-  id      String  @id @unique @default(cuid())
-  title   String
-  content String?
-  votes   Int
-  userId  String
-  realmId String
-  realm   Realm   @relation(fields: [realmId], references: [id])
-  user    User    @relation(fields: [userId], references: [id])
+  id        String   @id @unique @default(cuid())
+  title     String
+  content   String?
+  votes     Int
+  userId    String
+  realmId   String
+  createdAt DateTime @default(now())
+  realm     Realm    @relation(fields: [realmId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Realm {
-  id          String @id @default(cuid())
-  name        String @unique
+  id          String   @id @default(cuid())
+  name        String   @unique
   description String
-  ownerId     String @unique
-  posts       Post[]
-  members     User[]
+  ownerId     String   @unique
+  createdAt   DateTime @default(now())
+
+  posts   Post[]
+  members User[]
 }
 
 model User {

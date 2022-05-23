@@ -7,6 +7,7 @@ declare global {
 export type RealmWithPosts =
 	| (Realm & {
 			posts: PostWithUser[];
+			createdAt: Date;
 			_count: {
 				members: number;
 				posts: number;
@@ -20,6 +21,7 @@ export type PostWithUser = {
 		image: string | null;
 		name: string | null;
 	};
+	createdAt: Date;
 	id: string;
 	realm: Realm;
 	content: string;

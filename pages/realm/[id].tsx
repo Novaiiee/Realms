@@ -11,7 +11,7 @@ import CreatePostModal from "../../components/realm/CreatePostModal";
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 	const { id } = params as { id: string };
 
-	const realm = await prisma.realm.findUnique({
+	const realm: RealmWithPosts = (await prisma.realm.findUnique({
 		where: {
 			id,
 		},
@@ -22,8 +22,15 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 				},
 			},
 			posts: {
+				orderBy: {
+					createdAt: "desc",
+				},
 				select: {
-					realm: true,
+					realm: {
+						select: {
+							id: true,
+						},
+					},
 					content: true,
 					votes: true,
 					id: true,
@@ -38,7 +45,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 				},
 			},
 		},
-	});
+	})) as RealmWithPosts;
 
 	if (realm === null) {
 		return {
@@ -49,9 +56,20 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 		};
 	}
 
+	const createdAt = realm.createdAt.toJSON();
+
+	const serialized = {
+		...realm,
+		posts: realm.posts.map((p) => ({
+			...p,
+			createdAt: p.createdAt ? p.createdAt.toJSON() : new Date().toJSON(),
+		})),
+		createdAt,
+	};
+
 	return {
 		props: {
-			realm,
+			realm: serialized,
 		},
 	};
 };

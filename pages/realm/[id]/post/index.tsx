@@ -7,12 +7,17 @@ import Head from "next/head";
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 	const { postId } = query as { postId: string };
 
-	const post = await prisma.post.findUnique({
+	const post: PostWithUser = (await prisma.post.findUnique({
 		where: {
 			id: postId,
 		},
 		select: {
-			realm: true,
+			realm: {
+				select: {
+					id: true,
+					name: true,
+				},
+			},
 			content: true,
 			votes: true,
 			id: true,
@@ -25,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 				},
 			},
 		},
-	});
+	})) as PostWithUser;
 
 	if (post === null) {
 		return {
@@ -38,7 +43,10 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
 	return {
 		props: {
-			post,
+			post: {
+				...post,
+				createdAt: post.createdAt ? post.createdAt.toJSON() : new Date().toJSON(),
+			},
 		},
 	};
 };
