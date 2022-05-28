@@ -2,7 +2,6 @@
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { RealmWithPosts } from "../../lib/types";
 
 interface Input {
 	title: string;
@@ -10,10 +9,10 @@ interface Input {
 }
 
 interface Props {
-	realm: RealmWithPosts;
+	realmId: string;
 }
 
-export default function CreatePostModal({ realm }: Props) {
+export default function CreatePostModal({ realmId }: Props) {
 	const [submitErrors, setSubmitErrors] = useState<string[]>([]);
 	const { data: session } = useSession();
 
@@ -31,7 +30,7 @@ export default function CreatePostModal({ realm }: Props) {
 	const onSubmit = async (body: Input) => {
 		const res = await fetch("/api/realm/post/create", {
 			method: "POST",
-			body: JSON.stringify({ ...body, realmId: realm?.id, userId: session?.userId }),
+			body: JSON.stringify({ ...body, realmId, userId: session?.userId }),
 		});
 
 		const data = (await res.json()) as {

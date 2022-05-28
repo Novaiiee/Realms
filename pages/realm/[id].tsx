@@ -88,12 +88,12 @@ const realmById: NextPage<{ realm: RealmWithPosts }> = ({ realm }) => {
 					<h1 className="text-4xl font-semibold">{realm?.name}</h1>
 					{status === "authenticated" && (
 						<Link href={`/realm/${realm?.id}/post/create`}>
-							<CreatePostModal realm={realm} />
+							<CreatePostModal realmId={realm!.id} />
 						</Link>
 					)}
 					<div className="grid grid-cols-12 gap-10">
 						<section className="col-span-8 space-y-6">
-							{realm?.posts.map((post) => (
+							{realm!.posts.map((post) => (
 								<Post post={post} />
 							))}
 						</section>
@@ -104,7 +104,7 @@ const realmById: NextPage<{ realm: RealmWithPosts }> = ({ realm }) => {
 									<p>{realm?.description}</p>
 									<div>
 										{/* eslint-disable-next-line no-underscore-dangle */}
-										<h3>Members: {realm?._count.members}</h3>
+										<h3>Members: {realm!._count.members}</h3>
 									</div>
 								</div>
 							</div>
