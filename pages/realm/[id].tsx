@@ -5,7 +5,6 @@ import { RealmWithPosts } from "@lib/types";
 import { GetServerSideProps, NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import Link from "next/link";
 import CreatePostModal from "../../components/realm/CreatePostModal";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
@@ -76,6 +75,16 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
 const realmById: NextPage<{ realm: RealmWithPosts }> = ({ realm }) => {
 	const { status } = useSession();
+	const isAuthenticated = status === "authenticated";
+
+	const handleJoinRealm = async () => {
+		const res = await fetch(`/api/realm/join?id=${realm?.id}`, { method: "PUT" });
+		const data = await res.json();
+
+		if (data.errors.length === 0) {
+			window.location.reload();
+		}
+	};
 
 	return (
 		<>
@@ -86,11 +95,7 @@ const realmById: NextPage<{ realm: RealmWithPosts }> = ({ realm }) => {
 				<Navbar />
 				<section className="container mx-auto py-20 space-y-10">
 					<h1 className="text-4xl font-semibold">{realm?.name}</h1>
-					{status === "authenticated" && (
-						<Link href={`/realm/${realm?.id}/post/create`}>
-							<CreatePostModal realmId={realm!.id} />
-						</Link>
-					)}
+					{isAuthenticated && <CreatePostModal realmId={realm!.id} />}
 					<div className="grid grid-cols-12 gap-10">
 						<section className="col-span-8 space-y-6">
 							{realm!.posts.map((post) => (
@@ -100,7 +105,14 @@ const realmById: NextPage<{ realm: RealmWithPosts }> = ({ realm }) => {
 						<section className="col-span-4 border-1 border-gray-300 rounded-md p-4 max-h-fit">
 							<div>
 								<div className="max-h-fit space-y-2">
-									<h3 className="font-semibold">About realm</h3>
+									<div className="flex items-center justify-between">
+										<h3 className="font-semibold">About realm</h3>
+										{isAuthenticated && (
+											<button onClick={() => handleJoinRealm()} className="btn btn-secondary">
+												Join {realm?.name}
+											</button>
+										)}
+									</div>
 									<p>{realm?.description}</p>
 									<div>
 										{/* eslint-disable-next-line no-underscore-dangle */}

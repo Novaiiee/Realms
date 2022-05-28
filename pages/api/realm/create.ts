@@ -20,13 +20,18 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse):
 	if (foundRealm) {
 		return res.json({ errors: ["Realm already exists"] });
 	}
-  
+
 	const realm = await prisma.realm.create({
 		data: {
 			name,
 			description,
 			createdAt: new Date(),
 			ownerId: session.userId,
+			members: {
+				connect: {
+					id: session.userId,
+				},
+			},
 		},
 		select: {
 			name: true,
