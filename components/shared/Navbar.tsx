@@ -8,7 +8,7 @@ export default function Navbar() {
 	const isAuthenticated = status === "authenticated";
 
 	return (
-		<div className="navbar bg-base-100 container mx-auto py-5 shadow-sm px-0">
+		<div className="navbar bg-white container mx-auto py-5 shadow-sm px-0">
 			<div className="flex-1 navbar-start">
 				<a className="text-xl font-semibold" href="/">
 					Realms

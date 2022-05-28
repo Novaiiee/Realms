@@ -13,57 +13,49 @@ interface Props {
 
 export default function Post({ post }: Props) {
 	const { data: session, status } = useSession();
-
 	const isAuthenticated = status === "authenticated";
 
-	const onUpvote = useCallback(async () => {
-		const res = await fetch("/api/realm/post/vote", {
-			method: "PUT",
-			body: JSON.stringify({
-				id: post.id,
-				type: "increment",
-			}),
-		});
+	const voteHandler = useCallback(
+		(type: string) => async () => {
+			if (!isAuthenticated) return;
 
-		if (res.ok) {
-			window.location.reload();
-		}
-	}, []);
+			const res = await fetch("/api/realm/post/vote", {
+				method: "PUT",
+				body: JSON.stringify({
+					id: post.id,
+					type,
+				}),
+			});
 
-	const onDownvote = useCallback(async () => {
-		const res = await fetch("/api/realm/post/vote", {
-			method: "PUT",
-			body: JSON.stringify({
-				id: post.id,
-				type: "decrement",
-			}),
-		});
-
-		if (res.ok) {
-			window.location.reload();
-		}
-	}, []);
+			if (res.ok) {
+				window.location.reload();
+			}
+		},
+		[]
+	);
 
 	return (
 		<div className="grid grid-cols-12 border-1 border-gray-300 rounded-md">
 			<div className="bg-gray-300 col-span-1 flex justify-start items-center flex-col space-y-2 py-4">
-				<button onClick={() => onUpvote()}>
+				<button onClick={voteHandler("increment")}>
 					<ArrowUp />
 				</button>
 				<span>{formatVotes(post.votes)}</span>
-				<button onClick={() => onDownvote()}>
+				<button onClick={voteHandler("decrement")}>
 					<ArrowDown />
 				</button>
 			</div>
 			<Link href={`/realm/${post.realm.id}/post?postId=${post.id}`}>
 				<div className="col-span-11 p-4">
 					<div className="flex justify-between items-center">
-						<h3 className="opacity-50 mb-4">
-							Posted by{" "}
-							<span className="font-semibold">
-								{isAuthenticated && post.user.name === session?.user?.name ? "Me" : post.user.name}
-							</span>
-						</h3>
+						<div className="flex items-center space-x-4">
+							<img src={post.user.image ?? ""} className="w-10 rounded-md" alt={`${post.user.name}'s avatar`} />
+							<h3 className="opacity-50 mb-4 flex items-center">
+								<span className="font-semibold">
+									{isAuthenticated && post.user.name === session?.user?.name ? "Me" : post.user.name}
+								</span>
+							</h3>
+						</div>
 						<h3>{formatDate(post.createdAt.toString())}</h3>
 					</div>
 					<div className="space-y-2">
