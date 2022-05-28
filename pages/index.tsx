@@ -2,6 +2,7 @@ import PostComponent from "@components/shared/Post";
 import prisma from "@lib/prisma";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
+import CreateRealmModal from "../components/realm/CreateRealmModal";
 import Navbar from "../components/shared/Navbar";
 import { PostWithUser } from "../lib/types";
 
@@ -57,9 +58,7 @@ const index: NextPage<{ posts: PostWithUser[] }> = ({ posts }) => (
 				<section className="col-span-4 row-span-1 border-1 border-gray-300 rounded-md p-4 max-h-fit">
 					<div>
 						<div className="max-h-fit space-y-2">
-							<button type="submit" className="btn btn-secondary w-full">
-								Create Community
-							</button>
+							<CreateRealmModal />
 						</div>
 					</div>
 				</section>
